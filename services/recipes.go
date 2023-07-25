@@ -36,6 +36,7 @@ func CheckRecipe(dishId string, ingredientId string) (recipe Recipe, err error) 
 	switch err {
 	case sql.ErrNoRows:
 		recipe.Correct = false
+		err = nil
 
 	case nil:
 		recipe.Dish = &dish
