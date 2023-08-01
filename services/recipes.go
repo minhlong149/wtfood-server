@@ -4,16 +4,16 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/minhlong149/what-the-food/config"
+	_ "github.com/lib/pq"
+
+	"github.com/minhlong149/what-the-food/models"
 )
 
-type Recipe struct {
-	Dish       *Dish       `json:"dish,omitempty"`
-	Ingredient *Ingredient `json:"ingredient,omitempty"`
-	Correct    bool        `json:"correct"`
+type RecipeService struct {
+	Db *sql.DB
 }
 
-func CheckRecipe(dishId string, ingredientId string) (recipe Recipe, err error) {
+func (s *RecipeService) CheckRecipe(dishId string, ingredientId string) (models.Recipe, error) {
 	query := `
 		SELECT
 			d.id, d.name, d.category, d.image,
@@ -23,12 +23,13 @@ func CheckRecipe(dishId string, ingredientId string) (recipe Recipe, err error) 
 		JOIN ingredients i ON i.id = r.ingredient_id
 		WHERE dish_id = $1 AND ingredient_id = $2
 	`
-	row := config.Db.QueryRow(query, dishId, ingredientId)
+	dish := models.Dish{}
+	ingredient := models.Ingredient{}
+	recipe := models.Recipe{}
 
-	dish := Dish{}
-	ingredient := Ingredient{}
+	row := s.Db.QueryRow(query, dishId, ingredientId)
 
-	err = row.Scan(
+	err := row.Scan(
 		&dish.Id, &dish.Name, &dish.Category, &dish.Image,
 		&ingredient.Id, &ingredient.Name, &ingredient.Category, &ingredient.Image,
 	)
@@ -45,8 +46,8 @@ func CheckRecipe(dishId string, ingredientId string) (recipe Recipe, err error) 
 
 	default:
 		log.Println(err)
-		return
+		return recipe, err
 	}
 
-	return
+	return recipe, nil
 }

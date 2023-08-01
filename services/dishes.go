@@ -1,21 +1,20 @@
 package services
 
 import (
+	"database/sql"
 	"log"
 
-	"github.com/minhlong149/what-the-food/config"
+	_ "github.com/lib/pq"
+
+	"github.com/minhlong149/what-the-food/models"
 )
 
-type Dish struct {
-	Id          string `json:"id"`
-	Name        string `json:"name"`
-	Category    string `json:"category"`
-	Image       string `json:"image"`
-	Ingredients int    `json:"ingredients"`
+type DishService struct {
+	Db *sql.DB
 }
 
-func GetRandomDish() (dish Dish, err error) {
-	row := config.Db.QueryRow(`
+func (s *DishService) GetRandomDish() (models.Dish, error) {
+	row := s.Db.QueryRow(`
 		SELECT
 			d.id,
 			d.name,
@@ -28,12 +27,13 @@ func GetRandomDish() (dish Dish, err error) {
 		ORDER BY random() LIMIT 1
 	`)
 
-	err = row.Scan(&dish.Id, &dish.Name, &dish.Category, &dish.Image, &dish.Ingredients)
+	dish := models.Dish{}
 
+	err := row.Scan(&dish.Id, &dish.Name, &dish.Category, &dish.Image, &dish.Ingredients)
 	if err != nil {
 		log.Println(err)
-		return
+		return dish, err
 	}
 
-	return
+	return dish, nil
 }

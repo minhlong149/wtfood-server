@@ -4,45 +4,42 @@ import (
 	"database/sql"
 	"log"
 
+	_ "github.com/lib/pq"
 
-	"github.com/minhlong149/what-the-food/config"
+	"github.com/minhlong149/what-the-food/models"
 )
 
-type Ingredient struct {
-	Id       string `json:"id"`
-	Name     string `json:"name"`
-	Category string `json:"category"`
-	Image    string `json:"image"`
+type IngredientService struct {
+	Db *sql.DB
 }
 
-func GetAllIngredients() (ingredients []Ingredient, err error) {
-	var rows *sql.Rows
-
-	rows, err = config.Db.Query(`SELECT * FROM ingredients`)
+func (s *IngredientService) GetAllIngredient() ([]models.Ingredient, error) {
+	rows, err := s.Db.Query(`SELECT * FROM ingredients`)
 	if err != nil {
 		log.Println(err)
-		return
+		return nil, err
 	}
 
 	defer rows.Close()
 
+	var ingredients []models.Ingredient
+
 	for rows.Next() {
-		var ingredient Ingredient
+		var ingredient models.Ingredient
 
 		err = rows.Scan(&ingredient.Id, &ingredient.Name, &ingredient.Category, &ingredient.Image)
 		if err != nil {
 			log.Println(err)
-			return
+			return nil, err
 		}
 
 		ingredients = append(ingredients, ingredient)
 	}
 
-	err = rows.Err()
-	if err != nil {
+	if err = rows.Err(); err != nil {
 		log.Println(err)
-		return
+		return nil, err
 	}
 
-	return
+	return ingredients, nil
 }
