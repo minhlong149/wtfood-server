@@ -28,9 +28,14 @@ func main() {
 		RecipeService: &services.RecipeService{Db: db},
 	}
 
+	userHandler := &handlers.UserHandler{
+		UserService: &services.UserService{Db: db},
+	}
+
 	http.HandleFunc("/api/ingredients", ingredientHandler.GetAllIngredient)
 	http.HandleFunc("/api/dishes", dishHandler.GetRandomDish)
 	http.HandleFunc("/api/recipes", recipeHandler.CheckRecipe)
+	http.HandleFunc("/api/users", userHandler.Register)
 
 	http.ListenAndServe(":8080", nil)
 }

@@ -15,9 +15,7 @@ type RecipeService struct {
 
 func (s *RecipeService) CheckRecipe(dishId string, ingredientId string) (models.Recipe, error) {
 	query := `
-		SELECT
-			d.id, d.name, d.category, d.image,
-			i.id, i.name, i.category, i.image
+		SELECT d.id, d.name, i.id, i.name, i.image
 		FROM recipes r
 		JOIN dishes d ON d.id = r.dish_id
 		JOIN ingredients i ON i.id = r.ingredient_id
@@ -30,8 +28,8 @@ func (s *RecipeService) CheckRecipe(dishId string, ingredientId string) (models.
 	row := s.Db.QueryRow(query, dishId, ingredientId)
 
 	err := row.Scan(
-		&dish.Id, &dish.Name, &dish.Category, &dish.Image,
-		&ingredient.Id, &ingredient.Name, &ingredient.Category, &ingredient.Image,
+		&dish.Id, &dish.Name,
+		&ingredient.Id, &ingredient.Name, &ingredient.Image,
 	)
 
 	switch err {
