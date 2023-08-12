@@ -1,28 +1,30 @@
 package handler
 
-// import (
-// 	"github.com/gin-gonic/gin"
+import (
+	"wtfood/pkg/model"
 
-// 	"wtfood/pkg/models"
-// )
+	"github.com/gin-gonic/gin"
+)
 
-// type RecipeHandler struct {
-// 	RecipeService models.RecipeService
-// }
+func (h *Handler) CheckRecipe(c *gin.Context) {
+	dishId := c.Param("dishId")
+	ingredientId := c.Param("ingredientId")
 
-// func (h *RecipeHandler) CheckRecipe(c *gin.Context) {
-// 	dish := c.Param("dish")
-// 	ingredient := c.Param("ingredient")
-// 	if dish == "" || ingredient == "" {
-// 		c.JSON(400, gin.H{"error": "dish or ingredient is empty"})
-// 		return
-// 	}
+	if dishId == "" {
+		c.AbortWithStatusJSON(400, gin.H{"error": model.ErrMissingDishId.Error()})
+		return
+	}
 
-// 	ingredients, err := h.RecipeService.CheckRecipe(dish, ingredient)
-// 	if err != nil {
-// 		c.JSON(500, gin.H{"error": err.Error()})
-// 		return
-// 	}
+	if ingredientId == "" {
+		c.AbortWithStatusJSON(400, gin.H{"error": model.ErrMissingIngredientId.Error()})
+		return
+	}
 
-// 	c.JSON(200, ingredients)
-// }
+	dish, ingredient, exist, err := h.Service.DishHasIngredient(dishId, ingredientId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(200, gin.H{"dish": dish, "ingredient": ingredient, "exist": exist})
+}

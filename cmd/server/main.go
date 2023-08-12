@@ -30,19 +30,20 @@ func (app *App) SetupRouter() {
 
 	ingredientRouter := apiRouter.Group("/ingredients")
 	{
-		ingredientRouter.GET("", handler.GetAllIngredient)
+		ingredientRouter.GET("/all", handler.GetAllIngredient)
 	}
 
 	dishRouter := apiRouter.Group("/dishes")
 	{
 		dishRouter.GET("/random", handler.GetRandomDish)
+		dishRouter.GET("/:dishId/ingredients/:ingredientId", handler.CheckRecipe)
 	}
 
 	authenticatedDishRouter := dishRouter.Use(middleware.Authenticated(app.Config.SecretKey))
 	{
-		authenticatedDishRouter.GET("", handler.GetAllDishes)
-		authenticatedDishRouter.GET("/:id", handler.GetDishById)
-		authenticatedDishRouter.GET("/:id/ingredients", handler.GetIngredientsByDishId)
+		authenticatedDishRouter.GET("/all", handler.GetAllDishes)
+		authenticatedDishRouter.GET("/:dishId", handler.GetDishById)
+		authenticatedDishRouter.GET("/:dishId/ingredients", handler.GetIngredientsByDishId)
 	}
 }
 

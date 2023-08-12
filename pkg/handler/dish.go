@@ -32,7 +32,7 @@ func (h *Handler) GetRandomDish(c *gin.Context) {
 }
 
 func (h *Handler) GetDishById(c *gin.Context) {
-	dish, err := h.Service.GetDishById(c.Param("id"))
+	dish, err := h.Service.GetDishById(c.Param("dishId"))
 	if err != nil {
 		c.Error(err)
 		return
@@ -45,7 +45,7 @@ func (h *Handler) GetDishById(c *gin.Context) {
 }
 
 func (h *Handler) GetIngredientsByDishId(c *gin.Context) {
-	dish, err := h.Service.GetDishById(c.Param("id"))
+	dish, err := h.Service.GetDishById(c.Param("dishId"))
 	if err != nil {
 		c.Error(err)
 		return

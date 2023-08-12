@@ -6,6 +6,12 @@ import (
 
 var (
 	ErrDishNotFound = errors.New("i couldn't find that dish, maybe you should try another one?")
+	ErrMissingDishId = errors.New("i can't check a recipe without knowing which dish you want to cook")
+)
+
+var (
+	ErrIngredientNotFound = errors.New("i couldn't find that ingredient, maybe you should try another one?")
+	ErrMissingIngredientId = errors.New("i can't check a recipe without knowing which ingredient you want to use")
 )
 
 var (

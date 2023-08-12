@@ -11,5 +11,8 @@ func (h *Handler) GetAllIngredient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"ingredients": ingredients})
+	c.JSON(200, gin.H{
+		"ingredients": ingredients,
+		"total":       len(ingredients),
+	})
 }

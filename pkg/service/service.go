@@ -18,8 +18,12 @@ type Account = model.Account
 
 type Service interface {
 	GetAllIngredients() ([]Ingredient, error)
+
 	GetAllDishes() ([]Dish, error)
 	GetDishById(string) (Dish, error)
 	GetRandomDish() (Dish, error)
+
+	DishHasIngredient(string, string) (Dish,Ingredient, bool, error)
+
 	Login(Account, string) (string, error)
 }

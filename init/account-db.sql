@@ -1,10 +1,9 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "accounts" (
-  "id" uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-  "username" text,
-  "password" text,
-  "role" text
+  "id" serial PRIMARY KEY,
+  "username" text UNIQUE NOT NULL,
+  "password" text NOT NULL,
+  "role" text DEFAULT 'user'
 );
 
 INSERT INTO "accounts" ("username", "password", "role") VALUES ('root', 'password', 'admin');

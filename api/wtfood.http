@@ -1,4 +1,4 @@
-GET /api/ingredients
+GET /api/ingredients/all
 Host: localhost:8080
 
 ###
@@ -8,6 +8,24 @@ Host: localhost:8080
 
 ###
 
-GET /api/dishes
+GET /api/dishes/23/ingredients/412
+Host: localhost:8080
+
+###
+
+GET /api/dishes/all
 Host: localhost:8080
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6InJvb3QifQ.zdYQIwmAhwpAPrIiPg05Qc7jlyY7ZkzicJgSF_Apw0I
+
+###
+
+GET /api/dishes/23
+Host: localhost:8080
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6InJvb3QifQ.zdYQIwmAhwpAPrIiPg05Qc7jlyY7ZkzicJgSF_Apw0I
+
+###
+
+GET /api/dishes/23/ingredients
+Host: localhost:8080
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6InJvb3QifQ.zdYQIwmAhwpAPrIiPg05Qc7jlyY7ZkzicJgSF_Apw0I
+s

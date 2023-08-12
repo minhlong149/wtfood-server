@@ -1,20 +1,18 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE "ingredients" (
-  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "name" text,
+  "id" serial PRIMARY KEY,
+  "name" text NOT NULL,
   "image" text
 );
 
 CREATE TABLE "dishes" (
-  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "name" text,
+  "id" serial PRIMARY KEY,
+  "name" text NOT NULL,
   "image" text
 );
 
 CREATE TABLE "recipes" (
-  "ingredient_id" uuid,
-  "dish_id" uuid,
+  "ingredient_id" integer,
+  "dish_id" integer,
   PRIMARY KEY ("ingredient_id", "dish_id")
 );
 
