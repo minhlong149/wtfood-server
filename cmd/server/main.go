@@ -1,0 +1,77 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
+	"wtfood/pkg/handler"
+	"wtfood/pkg/middleware"
+	"wtfood/pkg/util"
+)
+
+type App struct {
+	Router   *gin.Engine
+	Database *gorm.DB
+	Config   util.Config
+	Logger   util.Logger
+}
+
+func (app *App) SetupRouter() {
+	handler := handler.SetupHandler(app.Logger, app.Config, app.Database)
+
+	apiRouter := app.Router.Group("/api")
+	apiRouter.Use(middleware.ErrorHandler(app.Logger))
+
+	ingredientRouter := apiRouter.Group("/ingredients")
+	{
+		ingredientRouter.GET("", handler.GetAllIngredient)
+	}
+
+	dishRouter := apiRouter.Group("/dishes")
+	{
+		dishRouter.GET("/random", handler.GetRandomDish)
+	}
+
+	authenticatedDishRouter := dishRouter.Use(middleware.Authenticated(app.Config.SecretKey))
+	{
+		authenticatedDishRouter.GET("", handler.GetAllDishes)
+		authenticatedDishRouter.GET("/:id", handler.GetDishById)
+		authenticatedDishRouter.GET("/:id/ingredients", handler.GetIngredientsByDishId)
+	}
+}
+
+func main() {
+	app := &App{
+		Logger: util.SetupLogger(),
+		Router: gin.Default(),
+		Config: util.LoadConfig(),
+	}
+
+	app.Database = util.SetupDB(app.Config)
+	app.SetupRouter()
+
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", app.Config.Port),
+		Handler: app.Router,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+			app.Logger.Error("Listen: %s", err)
+		}
+	}()
+
+	sigint := make(chan os.Signal, 1)
+	signal.Notify(sigint, os.Interrupt)
+	<-sigint
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		app.Logger.Error("Server shutdown: %s\n", err)
+	}
+}
