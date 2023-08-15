@@ -45,6 +45,8 @@ func (app *App) SetupRouter() {
 		authenticatedDishRouter.GET("/:dishId", handler.GetDishById)
 		authenticatedDishRouter.GET("/:dishId/ingredients", handler.GetIngredientsByDishId)
 	}
+
+	app.Router.NoRoute(gin.WrapH(http.FileServer(gin.Dir("./web", false))))
 }
 
 func main() {
