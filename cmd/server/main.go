@@ -28,6 +28,8 @@ func (app *App) SetupRouter() {
 	apiRouter := app.Router.Group("/api")
 	apiRouter.Use(middleware.ErrorHandler(app.Logger))
 
+	apiRouter.POST("/login", handler.Login)
+
 	ingredientRouter := apiRouter.Group("/ingredients")
 	{
 		ingredientRouter.GET("/all", handler.GetAllIngredient)

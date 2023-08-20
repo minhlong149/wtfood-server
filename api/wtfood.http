@@ -1,3 +1,14 @@
+POST /api/login
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "password"
+}
+
+###
+
 GET /api/ingredients/all
 Host: localhost:8080
 
